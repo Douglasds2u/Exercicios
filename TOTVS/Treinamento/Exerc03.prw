@@ -19,7 +19,6 @@ User Function Exerc03()
     aAdd(aExibDados, {"Paulo Gonçalves Neto",          ctoD("17/10/2000"), , "Masculino",  "Florianópolis",        Upper("sc"), , } )
 
     Local nCont := 0
-
     For nCont := 1 to Len(aExibDados)
 
         /*--------------------------------------------------------------------------------------------------------------
