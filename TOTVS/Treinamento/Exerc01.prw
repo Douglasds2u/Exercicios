@@ -1,106 +1,103 @@
 #INCLUDE "TOTVS.CH"
 
-/* --------------------------------------------------------
-Nome: Exerc01
-Meu Primeiro desafio em ADVPL com funções que me dirão meus dados, região do Brasil e o signo.
-Autor: Douglas Sousa
-Data: 08/08/2024
--------------------------------------------------------- */
+
 
 User Function Exerc01()
 
-local cNome    := ""
-local dDtNasc  := ctoD("")
-local cSex     := ""
-local cCid     := ""
-local cEst     := ""
-local cReg     := ""
-local cMsg     := ""
+    Local cMsg       := ""
+    Local aExibDados := {}
 
+    /*-------------------------------------------------------
+    Add > adiciona os elementos na variável aExibdados acima.
+    ---------------------------------------------------------*/
+    aAdd(aExibDados, {"Jaqueline Souza do Nascimento", ctoD("03/09/1994"), , "Feminino",  "São Bernardo do Campo", Upper("sp"), , } )
+    aAdd(aExibDados, {"Douglas Sousa do Nascimento",   ctoD("02/02/1995"), , "Masculino", "São Bernardo do Campo", Upper("mg"), , } )
+    aAdd(aExibDados, {"Antonio Pereira do Nascimento", ctoD("20/01/1949"), , "Masculino",  "Poções",               Upper("ba"), , } )
+    aAdd(aExibDados, {"Maria Silva Correa",            ctoD("09/03/1987"), , "Feminino",   "Brasilia",             Upper("df"), , } )
+    aAdd(aExibDados, {"Alef da Silva Carvalho",        ctoD("20/07/1992"), , "Masculino",  "Fortaleza",            Upper("ce"), , } )
+    aAdd(aExibDados, {"Fernando Soares Ferreira",      ctoD("28/11/1990"), , "Masculino",  "Goiania",              Upper("go"), , } )
+    aAdd(aExibDados, {"Paulo Gonçalves Neto",          ctoD("17/10/2000"), , "Masculino",  "Florianópolis",        Upper("sc"), , } )
 
-/*----------------
-Alimenta Variaveis
------------------*/
+    Local nCont := 0
+    For nCont := 1 to Len(aExibDados)
 
-cNome    := "Ronaldo Miller"
-dDtNasc  := ctoD("11/04/1970")
-cSex     := "Masculino"
-cCid     := "São bernardo do campo"
-cEst     := "RO"
+        /*--------------------------------------------------------------------------------------------------------------
+        DateDiffYear > pega a data atribuida na array e diferencia em anos com base na data do sistema local (dDataBase)
+        ---------------------------------------------------------------------------------------------------------------*/
+        aExibDados[nCont,3] := DateDiffYear(aExibDados[nCont,2], dDataBase)
+        
+        DeterminaRegiao(aExibDados[nCont]) //Retorno da Static function
+        DeterminaSigno(aExibDados[nCont]) //Retorno da Static function
+        
+        cMsg := "Nome: " + aExibDados[nCont,1] + ", nascido(a) em: " + dtoC(aExibDados[nCont,2]) + ", tem " + cValToChar(aExibDados[nCont,3]) + " anos, é do sexo " + aExibDados[nCont,4] + ", do signo de " + aExibDados[nCont,7] + ", e mora na região " + aExibDados[nCont,8] + " do Brasil."
+        FWAlertInfo(cMsg)
 
-cEst := Upper(cEst)  // Tratando para garantir tudo maiusculo para minhas comparaçòes abaixo. 
-cReg := u_FRegEst(cEst) // Função para exibir a região de cada estado.
-cSign := u_FSign(dDtNasc) // Função que exibe o signo através da data de aniversário.
+    Next nCont
 
-cMsg := "Nome: " + cNome + ", nascido em: " + dToC(dDtNasc) + ", do sexo " + cSex + ", da região " + cReg + " do Brasil, do signo de " + cSign + "."
-FWAlertInfo(cMsg)
+Return 
+
+Static Function DeterminaRegiao(aExibDados)
+    
+        //AllTrim retira os espaços em branco das strings, $ > Função que diz se o elemento das arrays estão contidos nas strings abaixo.
+        If AllTrim(Upper(aExibDados[6])) $ "AC/AP/AM/PA/RO/RR/TO"
+            aExibDados[8] := "Norte"
+        ElseIf AllTrim(Upper(aExibDados[6])) $ "AL/BA/CE/MA/PB/PE/PI/RN/SE"
+            aExibDados[8] := "Nordeste"
+        ElseIf AllTrim(Upper(aExibDados[6])) $ "DF/GO/MT/MS"
+            aExibDados[8] := "Centro-Oeste"
+        ElseIf AllTrim(Upper(aExibDados[6])) $ "ES/MG/RJ/SP"
+            aExibDados[8] := "Sudeste"
+        ElseIf AllTrim(Upper(aExibDados[6])) $ "PR/RS/SC"
+            aExibDados[8] := "Sul"           
+        Else
+            aExibDados[8] := "Outra Região"           
+        EndIf    
 
 Return
 
+Static Function DeterminaSigno(aExibDados)
 
-/*------------------------------
-Retorna a região de cada estado.
--------------------------------*/
+    Local nAno := Year(aExibDados[2])
 
-User Function FRegEst(cEst)
+        If (aExibDados[2] >= CtoD("21/01/"+str(nAno))) .and. (aExibDados[2] < CToD("19/02/"+str(nAno)))
+        aExibDados[7] := "Aquário"
 
-Local cRet := ""
+        ElseIf (aExibDados[2] >= CtoD("19/02/"+str(nAno))) .and. (aExibDados[2] < CToD("21/03/"+str(nAno)))
+        aExibDados[7] := "Peixes"
 
+        ElseIf (aExibDados[2] >= CtoD("21/03/"+str(nAno))) .and. (aExibDados[2] < CToD("21/04/"+str(nAno)))
+        aExibDados[7] := "Aries"
 
-if ( cEst  ==  "AC" ) .OR. ( cEst  ==  "AP" ) .OR. ( cEst  ==  "AM" ) .OR. ( cEst  ==  "PA" ) .OR. ( cEst  ==  "RO" ) .OR. ( cEst  ==  "RR" ) .OR. ( cEst  ==  "TO" )
-    cRet := "Norte"
-Elseif ( cEst == "MA" ) .OR. ( cEst == "PI" ) .OR. ( cEst == "CE" ) .OR. ( cEst == "RN" ) .OR. ( cEst == "PB" ) .OR. ( cEst == "PE" ) .OR. ( cEst == "AL" ) .OR. ( cEst == "SE" ) .OR. ( cEst == "BA" )
-    cRet := "Nordeste"
-Elseif ( cEst == "MT" ) .OR. ( cEst == "GO" ) .OR. ( cEst == "MS" ) .OR. ( cEst == "DF" )
-    cRet := "Centro-Oeste"
-Elseif ( cEst == "MG" ) .OR. ( cEst == "ES" ) .OR. ( cEst == "SP" ) .OR. ( cEst == "RJ" )
-    cRet := "Sudeste"
-Elseif ( cEst == "PR" ) .OR. ( cEst == "SC" ) .OR. ( cEst == "RS" )
-    cRet := "Sul"
-Else
-    cRet := "Não identificado"
-EndIf
+        ElseIf (aExibDados[2] >= CtoD("21/04/"+str(nAno))) .and. (aExibDados[2] < CToD("21/05/"+str(nAno)))
+        aExibDados[7] := "Touro"
 
+        ElseIf (aExibDados[2] >= CtoD("21/05/"+str(nAno))) .and. (aExibDados[2] < CToD("21/06/"+str(nAno)))
+        aExibDados[7] := "Gêmeos"
 
-Return cRet
+        ElseIf (aExibDados[2] >= CtoD("21/06/"+str(nAno))) .and. (aExibDados[2] < CToD("23/07/"+str(nAno)))
+        aExibDados[7] := "Câncer"
 
-/*---------------------------------------------
-Retorna o Signo através da data de aniversário.
-----------------------------------------------*/
+        ElseIf (aExibDados[2] >= CtoD("21/07/"+str(nAno))) .and. (aExibDados[2] < CToD("23/08/"+str(nAno)))
+        aExibDados[7] := "Leão"
 
-User Function FSign(dDtNasc)
+        ElseIf (aExibDados[2] >= CtoD("23/08/"+str(nAno))) .and. (aExibDados[2] < CToD("23/09/"+str(nAno)))
+        aExibDados[7] := "Virgem"
 
-Local cSign := ""
-Local nAno := Year(dDtNasc)
+        ElseIf (aExibDados[2] >= CtoD("23/09/"+str(nAno))) .and. (aExibDados[2] < CToD("23/10/"+str(nAno)))
+        aExibDados[7] := "Libra"
 
+        ElseIf (aExibDados[2] >= CtoD("23/10/"+str(nAno))) .and. (aExibDados[2] < CToD("22/11/"+str(nAno)))
+        aExibDados[7] := "Escorpião"
 
-if ( dDtNasc >= CtoD("21/01/"+str(nAno)) ) .and. ( dDtNasc < CToD("19/02/"+str(nAno)) )
-    cSign := "Aquário"
-Elseif ( dDtNasc >= CtoD("19/02/"+str(nAno)) ) .and. ( dDtNasc < CToD("21/03/"+str(nAno)) )
-    cSign := "Peixes"
-Elseif ( dDtNasc >= CtoD("21/03/"+str(nAno)) ) .and. ( dDtNasc < CToD("21/04/"+str(nAno)) )
-    cSign := "Áries"
-Elseif ( dDtNasc >= CtoD("21/04/"+str(nAno)) ) .and. ( dDtNasc < CToD("21/05/"+str(nAno)) )
-    cSign := "Touro"
-Elseif ( dDtNasc >= CtoD("21/05/"+str(nAno)) ) .and. ( dDtNasc < CToD("21/06/"+str(nAno)) )
-    cSign := "Gêmeos"
-Elseif ( dDtNasc >= CtoD("21/06/"+str(nAno)) ) .and. ( dDtNasc < CToD("23/07/"+str(nAno)) )
-    cSign := "Câncer"
-Elseif ( dDtNasc >= CtoD("23/07/"+str(nAno)) ) .and. ( dDtNasc < CToD("23/08/"+str(nAno)) )
-    cSign := "Leâo"
-Elseif ( dDtNasc >= CtoD("23/08/"+str(nAno)) ) .and. ( dDtNasc < CToD("23/09/"+str(nAno)) )
-    cSign := "Virgem"
-Elseif ( dDtNasc >= CtoD("23/09/"+str(nAno)) ) .and. ( dDtNasc < CToD("23/10/"+str(nAno)) )
-    cSign := "Libra"
-Elseif ( dDtNasc >= CtoD("23/10/"+str(nAno)) ) .and. ( dDtNasc < CToD("22/11/"+str(nAno)) )
-    cSign := "Escorpião"
-Elseif ( dDtNasc >= CtoD("22/11/"+str(nAno)) ) .and. ( dDtNasc < CToD("22/12/"+str(nAno)) )
-    cSign := "Sagitário"
-Elseif ( dDtNasc >= CtoD("22/12/"+str(nAno)) ) .and. ( dDtNasc < CToD("21/01/"+str(nAno)) )
-    cSign := "Capricórnio"
+        ElseIf (aExibDados[2] >= CtoD("22/11/"+str(nAno))) .and. (aExibDados[2] < CToD("22/12/"+str(nAno)))
+        aExibDados[7] := "Sagitário"
 
+        ElseIf (aExibDados[2] >= CtoD("22/12/"+str(nAno))) .or. (aExibDados[2] < CToD("21/01/"+str(nAno)))
+        aExibDados[7] := "Capricórnio"
 
-EndIf
+    Else
+        aExibDados[7] := "Não Definido"
 
+    EndIf
 
-Return cSign
+Return
