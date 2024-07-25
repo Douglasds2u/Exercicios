@@ -47,13 +47,13 @@ For nCont:=1 to Len(aTorcedor)
     -------------------------------------------------------------------------------*/
     aTorcedor[nCont,4] := DateDiffYear(aTorcedor[nCont,3], dDataBase)
 
-    if Upper("corinthians") $ (aTorcedor[nCont,2]) 
+if Upper("corinthians") $ (aTorcedor[nCont,2]) 
 
-        cMsg:= "O torcedor " + aTorcedor[nCont,1] + " torce para o " + Lower(Alltrim(aTorcedor[nCont,2])) + ", nasceu em " + dtoC(aTorcedor[nCont,3]) + " e tem " + cValToChar(aTorcedor[nCont,4]) + " anos de idade."
+    cMsg:= "O torcedor " + aTorcedor[nCont,1] + " torce para o " + Lower(Alltrim(aTorcedor[nCont,2])) + ", nasceu em " + dtoC(aTorcedor[nCont,3]) + " e tem " + cValToChar(aTorcedor[nCont,4]) + " anos de idade."
         
-        FWAlertInfo(cMsg)
+    FWAlertInfo(cMsg)
 
-    EndIf
+EndIf
 
 next nCont
 
