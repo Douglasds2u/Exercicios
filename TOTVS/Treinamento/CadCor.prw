@@ -15,7 +15,10 @@ Return
 
 
 
-
+/*------------------------------------------------------------------------------------------------------------------------------------------------------
+A função abaixo está validando o campo código da cor para ver se o código digitado já foi cadastrado, se não encontar nenhum registro com o mesmo código 
+ele segue o cadastro, se encontrar ele retorna um alert impedindo dar sequência no cadastro.
+---------------------------------------------------------------------------------------------*/
 User Function FVCodC()
 
 Local lRet := .T.
@@ -34,11 +37,12 @@ Endif
 
 //lRet := !( ZA1->(MsSeek(  FWxFilial("ZA1") + cCodTela )) )
 
-
-
 Return lRet 
 
 
+/*--------------------------------------------------------------------------------------------------------------
+A função abaixo está fazendo o mesmo trabalho da função acima, porém neste caso ela está validando o campo NOME.
+--------------------------------------------------------------------------------------------------------------*/
 User Function FVnomeC()
 Local lRet := .T.
 Local cNomeTela   := M->ZA1_NOME
