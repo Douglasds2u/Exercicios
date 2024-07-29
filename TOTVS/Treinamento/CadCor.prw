@@ -57,15 +57,14 @@ If ZA1->(MsSeek(  FWxFilial("ZA1") + cNomeTela ))
     Alert("O nome " + AllTrim(cNomeTela) +  " já existe e está sendo usado pelo código " + ZA1->ZA1_COD + ", para continuar digite outro nome!" ) 
 Endif
 
-
 //lRet := !( ZA1->(MsSeek(  FWxFilial("ZA1") + cCodTela )) )
-
-
-
 Return lRet 
 
 
-
+/*----------------------------------------------------------------------------------
+A Função abaixo valida se existe o código digitado no campo consulta padrão, 
+se o código não existir ele retorna .F. e impede do usuário dar sequência no cadastro
+-------------------------------------------------------------------------------------*/
 User Function FExistCor()
 Local lRet := .F.
 Local cExistCor := M->ZA1_COD
@@ -75,7 +74,7 @@ ZA1->(dbSetOrder(1))
 ZA1->(dbGoTop())
 
 If ExistCpo("ZA1", cExistCor)
-lRet := .T.
+    lRet := .T.
 Else
     Alert("Código não encontrado!")
 
