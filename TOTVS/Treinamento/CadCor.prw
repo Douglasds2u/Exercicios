@@ -59,26 +59,3 @@ Endif
 
 //lRet := !( ZA1->(MsSeek(  FWxFilial("ZA1") + cCodTela )) )
 Return lRet 
-
-
-/*----------------------------------------------------------------------------------
-A Função abaixo valida se existe o código digitado no campo consulta padrão, 
-se o código não existir ele retorna .F. e impede do usuário dar sequência no cadastro
--------------------------------------------------------------------------------------*/
-User Function FExistCor()
-Local lRet := .F.
-Local cExistCor := M->ZA1_COD
-
-dbSelectArea("ZA1")
-ZA1->(dbSetOrder(1))
-ZA1->(dbGoTop())
-
-If ExistCpo("ZA1", cExistCor)
-    lRet := .T.
-Else
-    Alert("Código não encontrado!")
-
-Endif
-
-
-Return lRet
