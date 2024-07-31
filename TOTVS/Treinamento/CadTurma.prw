@@ -24,32 +24,32 @@ Return
 
 User Function FVexcT()
 
-Local lValida := .T.
+Local lRet := .T.
 dbSelectArea("ZB3")
 ZB3->(dbSetOrder(3))
 
 If ZB3->(DBSEEK(FWXFILIAL("ZB3")+ZB2->ZB2_TANO))
-    lValida := .F.
-    alert("Existe uma amarração para este cadastro, não é possivel excluír este registro!")
+    lRet := .F.
+    alert("Existe uma amarração para este cadastro, não será possivel excluí-lo!")
 
 Endif
 
 
-Return
+Return lRet
 
 
 
 User Function FValtT()
 
-Local lValida := .T.
+Local lRet := .T.
 dbSelectArea("ZB3")
 ZB3->(dbSetOrder(3))
 
 If ZB3->(DBSEEK(FWXFILIAL("ZB3")+ZB2->ZB2_TANO))
-    lValida := .F.
-    alert("Existe uma amarração para este cadastro, não é possivel alterar este registro!")
+    lRet := .F.
+    alert("Existe uma amarração para este cadastro, não será possivel fazer alterações!")
 
 
 Endif
 
-Return
+Return lRet
