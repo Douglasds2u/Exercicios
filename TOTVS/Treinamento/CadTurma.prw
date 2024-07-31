@@ -19,8 +19,9 @@ AxCadastro("ZB2", "Cadastro de turmas para estágio", "u_FVexcT()", "u_FValtT()" 
 
 Return
 
-
-
+/*----------------------------------------------------------------------------------------------------------------------------------------------
+A função abaixo está validando se existe um registro amarrado para a turma cadastrada, se houver a função retorna .F. e não permite ser excluido.
+-----------------------------------------------------------------------------------------------------------------------------------------------*/
 
 User Function FVexcT()
 
@@ -37,7 +38,9 @@ Endif
 
 Return lRet
 
-
+/*---------------------------------------------------------------------------------------------------------------------------------------------------
+A função abaixo está validando se existe um registro amarrado para a turma cadastrada, se houver a função retorna .F. e não permite fazer alterações.
+---------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 User Function FValtT()
 
