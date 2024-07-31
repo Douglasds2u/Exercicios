@@ -51,7 +51,7 @@ ZB3->(dbSetOrder(2))
 If !(INCLUI)
     
     If ZB3->(MsSeek(FWXFILIAL("ZB3")+ZB1->ZB1_NOME))
-    
+    lRet := .F.
     alert("Existe uma amarração para este cadastro, não será possivel fazer alterações!")
 
     Endif
