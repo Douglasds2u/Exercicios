@@ -48,11 +48,11 @@ Local lRet := .T.
 dbSelectArea("ZB3")
 ZB3->(dbSetOrder(3))
 
-If ZB3->(MsSeek(FWXFILIAL("ZB3")+ZB2->ZB2_TANO))
-    lRet := .F.
-    alert("Existe uma amarração para este cadastro, não será possivel fazer alterações!")
-
-
+If !(INCLUI)
+    If ZB3->(MsSeek(FWXFILIAL("ZB3")+ZB2->ZB2_TANO))
+        lRet := .F.
+        alert("Existe uma amarração para este cadastro, não será possivel fazer alterações!")
+    Endif
 Endif
 
 Return lRet
