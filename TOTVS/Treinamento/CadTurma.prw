@@ -29,7 +29,7 @@ Local lRet := .T.
 dbSelectArea("ZB3")
 ZB3->(dbSetOrder(1))
 
-If ZB3->(MsSeek(FWXFILIAL("ZB3")+ZB2->ZB2_TANO))
+If ZB3->(MsSeek(FWXFILIAL("ZB3")+ZB2->ZB2_COD))
     lRet := .F.
     alert("Existe uma amarração para este cadastro, não será possivel excluí-lo!")
 
@@ -49,7 +49,7 @@ dbSelectArea("ZB3")
 ZB3->(dbSetOrder(1))
 
 If !(INCLUI)
-    If ZB3->(MsSeek(FWXFILIAL("ZB3")+ZB2->ZB2_TANO))
+    If ZB3->(MsSeek(FWXFILIAL("ZB3")+ZB2->ZB2_COD))
         lRet := .F.
         alert("Existe uma amarração para este cadastro, não será possivel fazer alterações!")
     Endif
