@@ -26,7 +26,7 @@ User Function FVexc()
 
 Local lRet := .T.
 dbSelectArea("ZB3")
-ZB3->(dbSetOrder(2))
+ZB3->(dbSetOrder(1))
 
 If ZB3->(MsSeek(FWXFILIAL("ZB3")+ZB1->ZB1_NOME))
     lRet := .F.
@@ -46,7 +46,7 @@ User Function FValt()
 
 Local lRet := .T.
 dbSelectArea("ZB3")
-ZB3->(dbSetOrder(2))
+ZB3->(dbSetOrder(1))
 
 If !(INCLUI)
     
