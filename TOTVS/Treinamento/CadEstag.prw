@@ -59,3 +59,23 @@ If !(INCLUI)
 Endif
 
 Return lRet
+
+
+User Function VldCpf()
+
+Local lRet := .F.
+Local cCpf := M->ZB1_CPF
+
+cCpf := StrTran(cCpf , ".", "")
+cCpf := StrTran(cCpf , "-", "")
+
+If !Empty(cCpf)
+
+    If ChkCPF(cCpf)
+    lRet := .T.
+    
+    Endif
+
+Endif
+
+Return lRet
