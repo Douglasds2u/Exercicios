@@ -60,7 +60,9 @@ Endif
 
 Return lRet
 
-
+/*--------------------------------------------------------------------------------------
+A função abaixo está validando se o número digitado é compativel com um número de cpf.
+---------------------------------------------------------------------------------------*/
 User Function VldCpf()
 
 Local lRet := .F.
@@ -77,5 +79,28 @@ If !Empty(cCpf)
     Endif
 
 Endif
+
+Return lRet
+
+/*----------------------------------------------------------------------------------------
+A função abaixo está validando se a idade do estagiário a ser cadastro é maior de 18 anos.
+-----------------------------------------------------------------------------------------*/
+User Function VDtNasc()
+
+Local dDtNasc := M->ZB1_DNASC
+Local cIdade  := ""
+Local lRet    := .T.
+cIdade := DateDiffYear(dDtNasc, dDataBase)
+
+
+If !Empty(dDtNasc)
+
+    If cIdade < 18
+    lRet := .F.
+    alert("Estagiário deve ter idade maior que 18 anos!")
+
+    EndIf
+
+EndIf
 
 Return lRet

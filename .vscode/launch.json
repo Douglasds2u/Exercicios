@@ -36,7 +36,10 @@
 		},
 		{
 			"label": "u_Teste"
+		},
+		{
+			"label": "SIGAGPE"
 		}
 	],
-	"lastProgramExecuted": "SIGACOM"
+	"lastProgramExecuted": "SIGAGPE"
 }
