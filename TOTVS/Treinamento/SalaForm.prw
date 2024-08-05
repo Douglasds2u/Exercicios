@@ -15,7 +15,10 @@ AxCadastro("ZB3", "Sala de Formação", , )
 
 Return
 
-
+/*------------------------------------------------------------------------------------------------------------------------------------------------
+A função abaixo verifica a data inicial da formação e a data final inserida no cadastro, se a data inicial for maior que a final segue o cadastro,
+senão retorna FALSE e impede o usuário prosseguir o cadastro com a data final menor do que a data de início.
+-----------------------------------------------------------------------------------------------------------*/
 User Function VDtForm()
 
 Local lRet := .T.
