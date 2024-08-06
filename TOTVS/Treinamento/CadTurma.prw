@@ -56,3 +56,24 @@ If !(INCLUI)
 Endif
 
 Return lRet
+
+
+/*-------------------------------------------------------------------------------------------------------------------------------
+A função abaixo está validando se o ano digitado na tela é compativel com o ano que a empresa começou a abrir vagas para estágio.
+-------------------------------------------------------------------------------------------------------------------------------*/
+User Function FVano()
+
+Local lRet := .T.
+Local nAnoAtual := cValToChar(Year(dDataBase))
+Local nAnoTela := M->ZB2_TANO
+
+If !Empty(nAnoTela)
+
+    If (nAnoTela < "2018") .or. (nAnoTela > nAnoAtual)
+        lRet := .F.
+        alert("Digite um ano válido para cadastro de turmas de estágio!")
+    EndIf
+
+EndIf
+
+Return lRet
