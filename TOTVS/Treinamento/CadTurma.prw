@@ -44,18 +44,37 @@ A função abaixo está validando se existe um registro amarrado para a turma cadas
 
 User Function FValtT()
 
-Local lRet := .T.
-dbSelectArea("ZB3")
-ZB3->(dbSetOrder(1))
+Local lRet          := .F.
+Local aFildsVal     := {"ZB2_COD","ZB2_TANO","ZB2_PERIOD"} 
+Local cAliasGen     := ""
 
-If !(INCLUI)
-    If ZB3->(MsSeek(FWXFILIAL("ZB3")+ZB2->ZB2_COD))
-        lRet := .F.
-        alert("Existe uma amarração para este cadastro, não será possivel fazer alterações!")
-    Endif
-Endif
+cAliasGen           := "ZB2"
+
+lRet:= u_VFields(cAliasGen, aFildsVal)
 
 Return lRet
+
+/*
+
+// Validaçao de alteraçào - não permitir alterar esses campos abaixo 
+// Validando se estou alterando Codigo 
+If ZB2->ZB2_COD <> M->ZB2_COD
+    lRet := .F.
+    alert("Nao é permitido alterar o código da turma!") 
+    lContinua := .F.
+// Validando se estou alterando Ano 
+ElseIf ZB2->ZB2_TANO <> M->ZB2_TANO
+    lRet := .F.
+    alert("Nao é permitido alterar o ano da turma!") 
+    lContinua := .F.
+// Validando se estou alterando Periodo 
+ElseIf ZB2->ZB2_PERIOD<> M->ZB2_PERIOD
+    lRet := .F.
+    alert("Nao é permitido alterar o periodo da turma!") 
+    lContinua := .F.
+EndIf 
+*/
+
 
 
 /*-------------------------------------------------------------------------------------------------------------------------------
