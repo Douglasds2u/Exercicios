@@ -44,7 +44,17 @@ A função abaixo está validando se existe um registro amarrado para o estagiário 
 
 User Function FValt()
 
-Local lRet := .T.
+Local cAliasGen := ""
+Local lRet      := .F. 
+Local aFildsVal := {"ZB1_COD", "ZB1_NOME", "ZB1_DNASC", "ZB1_CPF"}
+
+cAliasGen := "ZB1"
+
+lRet := u_VFields( cAliasGen , aFildsVal )
+
+Return lRet
+
+/*Local lRet := .T.
 dbSelectArea("ZB3")
 ZB3->(dbSetOrder(1))
 
@@ -56,9 +66,7 @@ If !(INCLUI)
 
     Endif
 
-Endif
-
-Return lRet
+Endif*/
 
 /*--------------------------------------------------------------------------------------
 A função abaixo está validando se o número digitado é compativel com um número de cpf.
@@ -87,17 +95,19 @@ A função abaixo está validando se a idade do estagiário a ser cadastro é maior d
 -----------------------------------------------------------------------------------------*/
 User Function VDtNasc()
 
-Local dDtNasc := M->ZB1_DNASC
-Local cIdade  := ""
-Local lRet    := .T.
-cIdade := DateDiffYear(dDtNasc, dDataBase)
+Local dDtNasc   := M->ZB1_DNASC
+Local nIdade    := 0
+Local lRet      := .T.
+Local cIdadMin  := SuperGetMv( "MV_XIDAMIN", .T. , "18", /*cFilial*/ )
+
+nIdade := DateDiffYear(dDtNasc, dDataBase)
 
 
 If !Empty(dDtNasc)
 
-    If cIdade < 18
+    If nIdade < Val(cIdadMin)
     lRet := .F.
-    alert("Estagiário deve ter idade maior que 18 anos!")
+    alert("Estagiário deve ter idade minima de  "  + cIdadMin + " anos!")
 
     EndIf
 
