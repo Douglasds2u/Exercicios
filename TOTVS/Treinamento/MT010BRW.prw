@@ -1,7 +1,7 @@
 #INCLUDE "TOTVS.CH"
 
 
-User Function MT010BRW()
+User Function MT010BRW() // Ponto de entrada para um botão no menu de cadastro de produtos
 
 Local aNewBut   := {} 
 
