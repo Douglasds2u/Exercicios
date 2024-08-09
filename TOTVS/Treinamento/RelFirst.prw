@@ -7,7 +7,7 @@ User Function RelFirst()
 Local oReport := NIL
 
 oReport := FReportDef()
-oReport:PrintDialog()
+oReport:PrintDialog() // Exibe a tela de configuração para impressão do relatório
 
 
 Return Nil 
@@ -15,21 +15,25 @@ Return Nil
 
 Static Function FReportDef()
 
-
+/*------------------------------------------------------------------------------------------------------------------------------------
+Cria a primeira tela para imprimir o relatório, guarda a função PrintReport onde irá retornar os dados da primeira página do relatório
+------------------------------------------------------------------------------------------------------------------------------------*/
 Local oReportRet := TReport():New("RelFirst","Ficha do Produto", /*cPerg*/ ,{|oReportRet| PrintReport(oReportRet)},"Impressão de ficha de produtos em TReport simples.")
 Local oSection   := NIL
 
-oReportRet:SetPortrait(.T.)
-oReportRet:SetColSpace(10)
+oReportRet:SetPortrait(.T.) //Define por padrão começar o relatorio com a opção retrato
+oReportRet:SetColSpace(1) //Define espaçamento entre as colunas
 
-
+/*-------------------------------------------------------------------------------------
+ Cria o layout do relatório com as colunas e campos que definimos da respectiva tabela
+ ------------------------------------------------------------------------------------*/
 oSection := TRSection():New( oReportRet , "Dados do Produto", {"SB1"} )
 
 TRCell():New( oSection, "B1_COD"      , "SB1")
 TRCell():New( oSection, "B1_DESC"     , "SB1")
 TRCell():New( oSection, "B1_TIPO"     , "SB1")
 TRCell():New( oSection, "B1_UM"       , "SB1")
-TRCell():New( oSection, "USUÁRIO"     , "SB1", , , 15, ,)
+TRCell():New( oSection, "USUÁRIO"     , "SB1", , , 15, ,) // O parâmetro numérico está difinindo a quantidade de caracteres do dado a ser impresso no relatório
 TRCell():New( oSection, "DATA"     , "SB1", , , 10, ,)
 TRCell():New( oSection, "HORA"     , "SB1", , , 8, ,)
 
@@ -45,11 +49,11 @@ Local cNomeUsr := UsrRetName(cCodUsr) //Retorna o nome do usuário logado no sist
 Local dData    := Date()
 Local cHora    := Time()
 
-/*---------------------------------------------------------------------+
-| Inicializa as configurações e define a primeira página do relatório |
-+---------------------------------------------------------------------+*/
+/*-------------------------------------------------------------------
+ Inicializa as configurações e define a primeira página do relatório 
+--------------------------------------------------------------------*/
 
-// Iniciando a seção
+//Iniciando a sessão e alimentando as colunas com os dados
 oSecPrint:Init()
 
 
@@ -62,7 +66,7 @@ oSecPrint:Cell("DATA"):SetValue( dData )
 oSecPrint:Cell("HORA"):SetValue( cHora )
 
 
-oSecPrint:PrintLine()
+oSecPrint:PrintLine() // Imprime as linhas 
 
 /*---------------------------------------------------------------------------------------------------------------------------------------------
 Finaliza a impressão do relatório, imprime os totalizadores, fecha as querys e índices temporários, entre outros tratamentos do componente.
