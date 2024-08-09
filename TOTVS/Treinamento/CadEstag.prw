@@ -90,9 +90,9 @@ Endif
 
 Return lRet
 
-/*----------------------------------------------------------------------------------------
-A função abaixo está validando se a idade do estagiário a ser cadastro é maior de 18 anos.
------------------------------------------------------------------------------------------*/
+/*---------------------------------------------------------------------------------------------------------------------------------------------------
+A função abaixo está validando a idade minima do estagiário que está parametrizado na SX6, caso esteja em branco retorna o valor passado como padrão.
+----------------------------------------------------------------------------------------------------------------------------------------------------*/
 User Function VDtNasc()
 
 Local dDtNasc   := M->ZB1_DNASC
