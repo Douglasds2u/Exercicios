@@ -25,9 +25,9 @@ Static Function ReportDef(cPerg)
     // Definição da seção 1 - Dados do cliente
     oSection1 := TRSection():New(oReport, 'Cliente')
 
-    TRCell():New(oSection1, 'A1_COD'    , , 'Cod.Cliente'   , '', TamSX3('A1_COD')[1])
-    TRCell():New(oSection1, 'A1_LOJA'    , , 'Loja'   , '', TamSX3('A1_LOJA')[1])
-    TRCell():New(oSection1, 'A1_NOME'    , , 'Nome:'   , '', TamSX3('A1_NOME')[1])
+    TRCell():New(oSection1, 'A1_COD'     , , 'Cod.Cliente'   , '', TamSX3('A1_COD')[1])
+    TRCell():New(oSection1, 'A1_LOJA'    , , 'Loja'          , '', TamSX3('A1_LOJA')[1])
+    TRCell():New(oSection1, 'A1_NOME'    , , 'Nome:'         , '', TamSX3('A1_NOME')[1])
 
     // Definição da seção 2 - Pedidos do cliente
     oSection2 := TRSection():New(oReport, 'Pedidos')
@@ -37,10 +37,10 @@ Static Function ReportDef(cPerg)
     // Definição da seção 3 - Itens dos Pedidos do cliente
     oSection3 := TRSection():New(oReport, 'Produtos')
 
-    TRCell():New(oSection3, 'C6_PRODUTO'   , , 'Produto:'    , '', TamSX3('C6_PRODUTO')[1])
-    TRCell():New(oSection3, 'C6_DESCRI'   , , 'Descrição'    , '', TamSX3('C6_DESCRI')[1])
-    TRCell():New(oSection3, 'C6_QTDVEN'   , , 'Quantidade:'    , '@E 9999', TamSX3('C6_QTDVEN')[1])
-    TRCell():New(oSection3, 'C6_VALOR'   , , 'Vlr Total:'    , '@E 9,999,999.99', TamSX3('C6_VALOR')[1])
+    TRCell():New(oSection3, 'C6_PRODUTO'   , , 'Produto:'       , '', TamSX3('C6_PRODUTO')[1])
+    TRCell():New(oSection3, 'C6_DESCRI'    , , 'Descrição:'     , '', TamSX3('C6_DESCRI')[1])
+    TRCell():New(oSection3, 'C6_QTDVEN'    , , 'Quantidade:'    , '@E 9999', TamSX3('C6_QTDVEN')[1])
+    TRCell():New(oSection3, 'C6_VALOR'     , , 'Vlr Total:'     , '@E 9,999,999.99', TamSX3('C6_VALOR')[1])
 Return oReport
 
 // Impressão do relatório de acordo com o filtro informado
@@ -55,9 +55,9 @@ Static Function PrintReport(oReport)
 
     BeginSql ALias cAliasCl
 
-        SELECT SA1.A1_COD
-            ,SA1.A1_lOJA
-            ,SA1.A1_NOME
+        SELECT SA1.A1_COD,
+               SA1.A1_lOJA,
+               SA1.A1_NOME
         FROM %Table:SA1% AS SA1
         WHERE A1_FILIAL = %xFilial:SA1% // Usando o where na ordem de algum índice da tabela, no caso o A1_FILIAL+A1_COD+A1_LOJA
             AND A1_COD BETWEEN %Exp:MV_PAR01% AND %Exp:MV_PAR03%
@@ -85,8 +85,8 @@ Static Function PrintReport(oReport)
 
             BeginSql Alias cAliasPd
 
-                SELECT SC5.C5_FILIAL // Adicionado para usar no filtro da SC6
-                    ,SC5.C5_NUM
+                SELECT SC5.C5_FILIAL, // Adicionado para usar no filtro da SC6
+                       SC5.C5_NUM
                 FROM %Table:SC5% AS SC5
                 WHERE SC5.C5_FILIAL = %Exp:xFilial("SC5")% // Sempre importante usar filial em todos os filtros, além da organização de índices comentado na linha 81
                     AND SC5.C5_CLIENTE = %Exp:(cAliasCl)->A1_COD%
@@ -112,10 +112,10 @@ Static Function PrintReport(oReport)
 
             BeginSql Alias cAliasPr
 
-                SELECT SC6.C6_PRODUTO
-                    ,SC6.C6_QTDVEN
-                    ,SC6.C6_DESCRI
-                    ,SC6.C6_VALOR
+                SELECT SC6.C6_PRODUTO,
+                       SC6.C6_QTDVEN,
+                       SC6.C6_DESCRI,
+                       SC6.C6_VALOR
                 FROM %Table:SC6% AS SC6
                 WHERE SC6.C6_FILIAL = %Exp:(cAliasPd)->C5_FILIAL% // Mesmo comentário da linha 90
                     AND SC6.C6_NUM = %Exp:(cAliasPd)->C5_NUM%
@@ -127,28 +127,28 @@ Static Function PrintReport(oReport)
 
             // Count To nRegs // Mesmo comentário da linha 68
 
-            If !((cAliasPr)->(EoF())) // nRegs > 0
+    If !((cAliasPr)->(EoF())) // nRegs > 0
 
-                // (cAliasPr)->(DbGoTop()) // Mesmo comentário da linha 72
+        // (cAliasPr)->(DbGoTop()) // Mesmo comentário da linha 72
 
-                while !((cAliasPr)->(EoF()))
+        while !((cAliasPr)->(EoF()))
 
-                    oSection3:Init()
-                    oSection3:Cell('C6_PRODUTO'):SetValue( Alltrim( (cAliasPr)->C6_PRODUTO ) )
-                    oSection3:Cell('C6_DESCRI'):SetValue( (cAliasPr)->C6_DESCRI )
-                    oSection3:Cell('C6_QTDVEN'):SetValue( (cAliasPr)->C6_QTDVEN )
-                    oSection3:Cell('C6_VALOR'):SetValue( (cAliasPr)->C6_VALOR )
+            oSection3:Init()
+            oSection3:Cell('C6_PRODUTO'):SetValue( Alltrim( (cAliasPr)->C6_PRODUTO ) )
+            oSection3:Cell('C6_DESCRI'):SetValue( (cAliasPr)->C6_DESCRI )
+            oSection3:Cell('C6_QTDVEN'):SetValue( (cAliasPr)->C6_QTDVEN )
+            oSection3:Cell('C6_VALOR'):SetValue( (cAliasPr)->C6_VALOR )
 
-                    oSection3:PrintLine()
+            oSection3:PrintLine()
 
-                    (cAliasPr)->(DbSkip())
+            (cAliasPr)->(DbSkip())
 
-                endDo
+        endDo
 
-                oSection3:Finish()
-                oReport:SkipLine(1)
+        oSection3:Finish()
+        oReport:SkipLine(1)
 
-            EndIf
+    EndIf
 
             oSection2:Finish()
             (cAliasPr)->(DbCloseArea()) // Esse closeArea é referente a seção anterior que já foi encerrada na linha 147, sendo assim faz sentido
