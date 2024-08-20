@@ -1,11 +1,11 @@
 #INCLUDE "TOTVS.CH"
 
-/* --------------------------------------------------------
+/* -----------------------------------------------------------------------------------------
 Nome: Relat
 Rotina para impressão de relatório com três sessões, clientes, pedidos e intens dos pedidos.
 Autor: Douglas Sousa
 Data: 20/08/2024
--------------------------------------------------------- */
+------------------------------------------------------------------------------------------ */
 
 // Relatório de impressão de Pedidos por cliente com produtos
 User Function Relat()
