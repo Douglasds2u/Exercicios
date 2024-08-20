@@ -73,7 +73,7 @@ Static Function PrintReport(oReport)
 
     EndSql
 
-    If !((cAliasCl)->(EoF())) //nRegs > 0
+    If !((cAliasCl)->(EoF()))
 
         While !((cAliasCl)->(EoF()))
 
@@ -142,7 +142,7 @@ Static Function PrintReport(oReport)
     EndIf
 
             oSection2:Finish()
-            (cAliasPr)->(DbCloseArea()) // Esse closeArea é referente a seção anterior que já foi encerrada na linha 147, sendo assim faz sentido
+            (cAliasPr)->(DbCloseArea()) // Esse closeArea é referente a seção anterior que já foi encerrada na linha 139, sendo assim faz sentido
 
             (cAliasPd)->(DbSkip())
 
