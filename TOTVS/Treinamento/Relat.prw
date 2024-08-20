@@ -1,5 +1,11 @@
 #INCLUDE "TOTVS.CH"
 
+/* --------------------------------------------------------
+Nome: Relat
+Rotina para impressão de relatório com três sessões, clientes, pedidos e intens dos pedidos.
+Autor: Douglas Sousa
+Data: 20/08/2024
+-------------------------------------------------------- */
 
 // Relatório de impressão de Pedidos por cliente com produtos
 User Function Relat()
@@ -41,17 +47,18 @@ Static Function ReportDef(cPerg)
     TRCell():New(oSection3, 'C6_DESCRI'    , , 'Descrição:'     , '', TamSX3('C6_DESCRI')[1])
     TRCell():New(oSection3, 'C6_QTDVEN'    , , 'Quantidade:'    , '@E 9999', TamSX3('C6_QTDVEN')[1])
     TRCell():New(oSection3, 'C6_VALOR'     , , 'Vlr Total:'     , '@E 9,999,999.99', TamSX3('C6_VALOR')[1])
+
 Return oReport
 
 // Impressão do relatório de acordo com o filtro informado
 Static Function PrintReport(oReport)
+    
     Local oSection1 := oReport:Section(1)
     Local oSection2 := oReport:Section(2)
     Local oSection3 := oReport:Section(3)
     Local cAliasCl  := GetNextAlias()
     Local cAliasPd  := GetNextAlias()
     Local cAliasPr  := GetNextAlias()
-    //Local nRegs     := 0
 
     BeginSql ALias cAliasCl
 
@@ -66,11 +73,7 @@ Static Function PrintReport(oReport)
 
     EndSql
 
-    // Count To nRegs // Recomendo só usar se precisar saber a quantidade de linha para mostrar em algum lugar, para saber se registros foram encontrados pode usar o EOF()
-
     If !((cAliasCl)->(EoF())) //nRegs > 0
-
-        // (cAliasCl)->( DbGoTop()) // Não é necessário pois já está no começo, porém se usar o "Count To nRegs", aí precisa usar
 
         While !((cAliasCl)->(EoF()))
 
@@ -88,20 +91,14 @@ Static Function PrintReport(oReport)
                 SELECT SC5.C5_FILIAL, // Adicionado para usar no filtro da SC6
                        SC5.C5_NUM
                 FROM %Table:SC5% AS SC5
-                WHERE SC5.C5_FILIAL = %Exp:xFilial("SC5")% // Sempre importante usar filial em todos os filtros, além da organização de índices comentado na linha 81
+                WHERE SC5.C5_FILIAL = %Exp:xFilial("SC5")%
                     AND SC5.C5_CLIENTE = %Exp:(cAliasCl)->A1_COD%
                     AND SC5.C5_LOJACLI = %Exp:(cAliasCl)->A1_LOJA%
                     AND SC5.%NotDel%
 
             EndSql
 
-            // nRegs := 0
-
-            // Count To nRegs // Mesmo comentário da linha 68
-
-    If !((cAliasPd)->(EoF())) // nRegs > 0
-
-        // (cAliasPd)->( DbGoTop() ) // Mesmo comentário da linha 72
+    If !((cAliasPd)->(EoF()))
 
         While !((cAliasPd)->(EoF()))
 
@@ -117,19 +114,13 @@ Static Function PrintReport(oReport)
                        SC6.C6_DESCRI,
                        SC6.C6_VALOR
                 FROM %Table:SC6% AS SC6
-                WHERE SC6.C6_FILIAL = %Exp:(cAliasPd)->C5_FILIAL% // Mesmo comentário da linha 90
+                WHERE SC6.C6_FILIAL = %Exp:(cAliasPd)->C5_FILIAL%
                     AND SC6.C6_NUM = %Exp:(cAliasPd)->C5_NUM%
                     AND SC6.%NotDel%
 
             EndSql
 
-            // nRegs := 0
-
-            // Count To nRegs // Mesmo comentário da linha 68
-
-    If !((cAliasPr)->(EoF())) // nRegs > 0
-
-        // (cAliasPr)->(DbGoTop()) // Mesmo comentário da linha 72
+    If !((cAliasPr)->(EoF()))
 
         while !((cAliasPr)->(EoF()))
 
@@ -159,7 +150,7 @@ Static Function PrintReport(oReport)
 
     EndIf
 
-            (cAliasPd)->(DbCloseArea()) // Comentário semelhante na linha 153
+            (cAliasPd)->(DbCloseArea())
 
             (cAliasCl)->(DbSkip())
 
@@ -169,7 +160,7 @@ Static Function PrintReport(oReport)
         EndDo
 
     Else
-        // Aqui pode colocar um aviso que nenhum cliente foi encontrado no filtro.
+        Alert('Nenhum pedido por cliente foi encontrado no filtro informado!')
     EndIf
 
     (cAliasCl)->(DbCloseArea())
