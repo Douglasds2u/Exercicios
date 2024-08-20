@@ -164,7 +164,7 @@ Static Function PrintReport(oReport)
         EndDo
 
     Else
-        Alert('Nenhum pedido por cliente foi encontrado no filtro informado!')
+        Alert('Não há Registros para o código informado!')
     EndIf
 
     (cAliasCl)->(DbCloseArea())
