@@ -9,17 +9,21 @@ Data: 20/08/2024
 
 // Relatório de impressão de Pedidos por cliente com produtos
 User Function Relat()
+    
     Local oReport := Nil
     Local cPerg   := 'RELAT'
 
     If Pergunte(cPerg, .T.)
-        oReport := ReportDef(cPerg)
+        
+        oReport := ReportDef(cPerg)       
         oReport:PrintDialog()
+    
     EndIf
 Return
 
 // Definição da estrutura do relatório
 Static Function ReportDef(cPerg)
+    
     Local oReport   := Nil
     Local oSection1 := Nil
     Local oSection2 := Nil
@@ -142,7 +146,7 @@ Static Function PrintReport(oReport)
     EndIf
 
             oSection2:Finish()
-            (cAliasPr)->(DbCloseArea()) // Esse closeArea é referente a seção anterior que já foi encerrada na linha 139, sendo assim faz sentido
+            (cAliasPr)->(DbCloseArea()) // Esse closeArea é referente a seção anterior que já foi encerrada na linha 143, sendo assim faz sentido
 
             (cAliasPd)->(DbSkip())
 
