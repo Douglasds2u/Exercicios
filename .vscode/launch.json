@@ -39,7 +39,10 @@
 		},
 		{
 			"label": "SIGAGPE"
+		},
+		{
+			"label": "SIGAFAT"
 		}
 	],
-	"lastProgramExecuted": "SIGACOM"
+	"lastProgramExecuted": "SIGAFAT"
 }

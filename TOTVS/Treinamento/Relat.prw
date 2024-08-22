@@ -64,6 +64,9 @@ Static Function PrintReport(oReport)
     Local cAliasPd  := GetNextAlias()
     Local cAliasPr  := GetNextAlias()
 
+    /*---------------------------------------
+    Fazendo uma query utilizando Embedded SQL
+    ---------------------------------------*/
     BeginSql ALias cAliasCl
 
         SELECT SA1.A1_COD,
@@ -146,7 +149,7 @@ Static Function PrintReport(oReport)
     EndIf
 
             oSection2:Finish()
-            (cAliasPr)->(DbCloseArea()) // Esse closeArea é referente a seção anterior que já foi encerrada na linha 143, sendo assim faz sentido
+            (cAliasPr)->(DbCloseArea()) // Esse closeArea é referente a seção anterior que já foi encerrada na linha 143
 
             (cAliasPd)->(DbSkip())
 
