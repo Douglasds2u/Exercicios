@@ -105,64 +105,64 @@ Static Function PrintReport(oReport)
 
             EndSql
 
-    If !((cAliasPd)->(EoF()))
+            If !((cAliasPd)->(EoF()))
 
-        While !((cAliasPd)->(EoF()))
+                While !((cAliasPd)->(EoF()))
 
-            oSection2:Init()
-            oSection2:Cell('C5_NUM'):SetValue( Alltrim( (cAliasPd)->C5_NUM ) )
+                    oSection2:Init()
+                    oSection2:Cell('C5_NUM'):SetValue( Alltrim( (cAliasPd)->C5_NUM ) )
 
-            oSection2:PrintLine()
+                    oSection2:PrintLine()
 
-            BeginSql Alias cAliasPr
+                    BeginSql Alias cAliasPr
 
-                SELECT SC6.C6_PRODUTO,
-                       SC6.C6_QTDVEN,
-                       SC6.C6_DESCRI,
-                       SC6.C6_VALOR
-                FROM %Table:SC6% AS SC6
-                WHERE SC6.C6_FILIAL = %Exp:(cAliasPd)->C5_FILIAL%
-                    AND SC6.C6_NUM = %Exp:(cAliasPd)->C5_NUM%
-                    AND SC6.%NotDel%
+                        SELECT SC6.C6_PRODUTO,
+                            SC6.C6_QTDVEN,
+                            SC6.C6_DESCRI,
+                            SC6.C6_VALOR
+                        FROM %Table:SC6% AS SC6
+                        WHERE SC6.C6_FILIAL = %Exp:(cAliasPd)->C5_FILIAL%
+                            AND SC6.C6_NUM = %Exp:(cAliasPd)->C5_NUM%
+                            AND SC6.%NotDel%
 
-            EndSql
+                    EndSql
 
-    If !((cAliasPr)->(EoF()))
+                    If !((cAliasPr)->(EoF()))
 
-        while !((cAliasPr)->(EoF()))
+                        while !((cAliasPr)->(EoF()))
 
-            oSection3:Init()
-            oSection3:Cell('C6_PRODUTO'):SetValue( Alltrim( (cAliasPr)->C6_PRODUTO ) )
-            oSection3:Cell('C6_DESCRI'):SetValue( (cAliasPr)->C6_DESCRI )
-            oSection3:Cell('C6_QTDVEN'):SetValue( (cAliasPr)->C6_QTDVEN )
-            oSection3:Cell('C6_VALOR'):SetValue( (cAliasPr)->C6_VALOR )
+                            oSection3:Init()
+                            oSection3:Cell('C6_PRODUTO'):SetValue( Alltrim( (cAliasPr)->C6_PRODUTO ) )
+                            oSection3:Cell('C6_DESCRI'):SetValue( (cAliasPr)->C6_DESCRI )
+                            oSection3:Cell('C6_QTDVEN'):SetValue( (cAliasPr)->C6_QTDVEN )
+                            oSection3:Cell('C6_VALOR'):SetValue( (cAliasPr)->C6_VALOR )
 
-            oSection3:PrintLine()
+                            oSection3:PrintLine()
 
-            (cAliasPr)->(DbSkip())
+                            (cAliasPr)->(DbSkip())
 
-        endDo
+                        endDo
 
-        oSection3:Finish()
-        oReport:SkipLine(1)
+                        oSection3:Finish()
+                        oReport:SkipLine(1)
 
-    EndIf
+                    EndIf
 
-            oSection2:Finish()
-            (cAliasPr)->(DbCloseArea()) // Esse closeArea é referente a seção anterior que já foi encerrada na linha 143
+                oSection2:Finish()
+                (cAliasPr)->(DbCloseArea()) // Esse closeArea é referente a seção anterior que já foi encerrada.
 
-            (cAliasPd)->(DbSkip())
+                (cAliasPd)->(DbSkip())
 
-        EndDo
+                EndDo
 
-    EndIf
+            EndIf
 
-            (cAliasPd)->(DbCloseArea())
+        (cAliasPd)->(DbCloseArea())
 
-            (cAliasCl)->(DbSkip())
+        (cAliasCl)->(DbSkip())
 
-            oReport:SkipLine(2)
-            oSection1:Finish()
+        oReport:SkipLine(2)
+        oSection1:Finish()
 
         EndDo
 
