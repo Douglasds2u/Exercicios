@@ -1,6 +1,12 @@
 #INCLUDE 'totvs.ch'
 #INCLUDE 'topconn.ch'
 
+/* ------------------------------------------------------------
+Nome: RelFirst
+Rotina para impressão de ficha de produtos em TReport simples.
+Autor: Douglas Sousa
+Data: 20/08/2024
+------------------------------------------------------------- */
 
 User Function RelFirst()
 
@@ -8,7 +14,6 @@ Local oReport := NIL
 
 oReport := FReportDef()
 oReport:PrintDialog() // Exibe a tela de configuração para impressão do relatório
-
 
 Return Nil 
 
@@ -22,7 +27,7 @@ Local oReportRet := TReport():New("RelFirst","Ficha do Produto", /*cPerg*/ ,{|oR
 Local oSection   := NIL
 
 oReportRet:SetPortrait(.T.) //Define por padrão começar o relatorio com a opção retrato
-oReportRet:SetColSpace(1) //Define espaçamento entre as colunas
+oReportRet:SetColSpace(5) //Define espaçamento entre as colunas
 
 /*-------------------------------------------------------------------------------------
  Cria o layout do relatório com as colunas e campos que definimos da respectiva tabela
@@ -37,8 +42,8 @@ TRCell():New( oSection, "USUÁRIO"     , "SB1", , , 15, ,) // O parâmetro numéric
 TRCell():New( oSection, "DATA"     , "SB1", , , 10, ,)
 TRCell():New( oSection, "HORA"     , "SB1", , , 8, ,)
 
-
 Return oReportRet 
+
 
 
 Static Function PrintReport(oReportRet)
@@ -50,7 +55,7 @@ Local dData    := Date()
 Local cHora    := Time()
 
 /*-------------------------------------------------------------------
- Inicializa as configurações e define a primeira página do relatório 
+Inicializa as configurações e define a primeira página do relatório 
 --------------------------------------------------------------------*/
 
 //Iniciando a sessão e alimentando as colunas com os dados
@@ -76,4 +81,3 @@ oSecPrint:Finish()
 
 
 Return NIL
-
