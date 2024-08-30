@@ -62,7 +62,7 @@ Static Function ModelDef()
 
     oModel := MPFormModel():New("MVCCONVM", bPre, bPos, bCommit, bCancel)
     oModel:AddFields("ZA4MASTER", /*cOwner*/, oStruPai)
-    oModel:AddGrid("ZA3DETAIL", "ZA4MASTER", oStruFilho)
+    oModel:AddGrid("ZA3DETAIL", "ZA4MASTER", oStruFilho) 
     oModel:SetDescription(cTitulo)
     oModel:GetModel("ZA4MASTER"):SetDescription(cTitulo)
     oModel:GetModel("ZA3DETAIL"):SetDescription("Veículos")
