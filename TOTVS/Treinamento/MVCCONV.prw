@@ -43,7 +43,7 @@ Static Function MenuDef()
     ADD OPTION aRotina TITLE "Incluir"      ACTION "VIEWDEF.MVCCONV" OPERATION 3 ACCESS 0
     ADD OPTION aRotina TITLE "Alterar"      ACTION "VIEWDEF.MVCCONV" OPERATION 4 ACCESS 0
     ADD OPTION aRotina TITLE "Excluír"      ACTION "VIEWDEF.MVCCONV" OPERATION 5 ACCESS 0
-    ADD OPTION aRotina TITLE "Imprimir"     ACTION "VIEWDEF.MVCCONV" OPERATION 8 ACCESS 0
+    ADD OPTION aRotina TITLE "Imprimir"     ACTION "u_RelConVe"      OPERATION 8 ACCESS 0
     ADD OPTION aRotina TITLE "Copiar"       ACTION "VIEWDEF.MVCCONV" OPERATION 9 ACCESS 0
 
 Return aRotina
@@ -73,6 +73,8 @@ Static Function ModelDef()
     aAdd(aRelation, {"ZA3_CODIGO", "ZA4_COD"})
     oModel:SetRelation("ZA3DETAIL", aRelation, ZA3->(IndexKey(1)))
 
+    oModel:AddCalc('TOTAIS', 'ZA4MASTER', 'ZA3DETAIL', 'ZA3_VEIC', 'XX_TOTVEIC', 'COUNT', , , "Total de Veículos:")
+
 Return oModel
 
 /*Camada visual (interface)*/
@@ -81,6 +83,7 @@ Static Function ViewDef()
     Local oModel     := FWLoadModel("MVCCONV")
     Local oStruPai   := FWFormStruct(2, cTabPai)
     Local oStruFilho := FWFormStruct(2, cTabFilho)
+    Local oStruTot   := FWCalcStruct(oModel:GetModel('TOTAIS'))
     Local oView      := Nil
 
     //Cria a visualização do Cadastro
@@ -88,10 +91,14 @@ Static Function ViewDef()
     oView:SetModel(oModel)
     oView:AddField("VIEW_ZA4", oStruPai, "ZA4MASTER")
     oView:AddGrid("VIEW_ZA3", oStruFilho, "ZA3DETAIL")
-    oView:CreateHorizontalBox("CABEC", 40)
-    oView:CreateHorizontalBox("GRID", 60)
+    oView:AddField("VIEW_TOT", oStruTot, "TOTAIS")
+
+    oView:CreateHorizontalBox("CABEC", 35)
+    oView:CreateHorizontalBox("GRID", 50)
+    oView:CreateHorizontalBox("ENCH_TOT", 15)
     oView:SetOwnerView("VIEW_ZA4", "CABEC")
     oView:SetOwnerView("VIEW_ZA3", "GRID")
+    oView:SetOwnerView("VIEW_TOT", "ENCH_TOT")
 
     //Titulos
     oView:EnableTitleView("VIEW_ZA4", "Concessionária")
