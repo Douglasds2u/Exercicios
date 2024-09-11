@@ -140,8 +140,9 @@ Static Function ViewDef()
 
 Return oView
 
-
+/*Função de auditoria para gravar operação realizada na tabela ZC1*/
 User Function FGrvAcao(oModel)
+    Local aArea      := GetArea()
     Local nOperation := oModel:GetOperation()
     Local cAcao      := ''
     Local dData      := Date()
@@ -150,23 +151,13 @@ User Function FGrvAcao(oModel)
     Local nRecno     := 0
     Local lRet       := .T.
     Local cServer    := GetClientIp()
-
-    Local cNum := GETSXENUM("ZZ1","ZZ1_COD")
- 
-    DbSelectArea("ZZ1")
-    ZZ1->(DbSetOrder(1))
-        While (DbSeek(xFilial("ZZ1")+cNum))
-        ConfirmSX8()
-        
-        cNum := GETSXENUM("ZZ1","ZZ1_COD")
-        Enddo
-    
-    DbCloseArea()
-    RollbackSx8()
+    Local nGridZC2   := 0
+    Local oZC1Master := oModel:GetModelStruct("ZC1MASTER")[3]
+    Local oZC2Detail := oModel:GetModelStruct("ZC2DETAIL")[3]
 
     lRet := FwFormCommit(oModel)
     nRecno := ZC1->(RecNo())
-
+        
     If nOperation == MODEL_OPERATION_INSERT
         cAcao := 'Inclusão'
 
@@ -176,18 +167,56 @@ User Function FGrvAcao(oModel)
     ElseIF nOperation == MODEL_OPERATION_DELETE
         cAcao := 'Exclusão'
 
-    EndIf 
+    EndIf
 
-    DbSelectArea("ZZ1")
-    RecLock("ZZ1", .T.)
-        ZZ1->ZZ1_FILIAL := xFilial("ZZ1")
-        ZZ1->ZZ1_COD    := cNum
-        ZZ1->ZZ1_ACAO   := cAcao
-        ZZ1->ZZ1_DATA   := dData
-        ZZ1->ZZ1_HORA   := cHora
-        ZZ1->ZZ1_USER   := cCodUsr
-        ZZ1->ZZ1_IP     := cServer
-        ZZ1->ZZ1_RECNO  := nRecno
-    MsUnLock() // Comfirma e finaliza a operação
+    If (oZC1Master:IsModified("ZC1MASTER")) //IsFieldUpdated
+        DbSelectArea("ZZ1")
+        RecLock("ZZ1", .T.)
+            ZZ1->ZZ1_FILIAL := xFilial("ZZ1")
+            ZZ1->ZZ1_COD    := GETSXENUM("ZZ1","ZZ1_COD")
+            ZZ1->ZZ1_ACAO   := cAcao
+            ZZ1->ZZ1_DATA   := dData
+            ZZ1->ZZ1_HORA   := cHora
+            ZZ1->ZZ1_USER   := cCodUsr
+            ZZ1->ZZ1_IP     := cServer
+            ZZ1->ZZ1_RECNO  := nRecno
+        MsUnLock() // Comfirma e finaliza a operação
+    EndIf
 
+
+    DbSelectArea("ZC2")
+    ZC2->(DBSetOrder(2))
+        
+    For nGridZC2 := 1 to oZC2Detail:Length()
+        
+        If ZC2->(DBSeek(xFilial("ZC2") + oZC2Detail:GetValue("ZC2_COD") + oZC2Detail:GetValue("ZC2_MARCA")))
+           nRecno := ZC2->(RecNo())
+
+            If(oZC2Detail:IsFieldUpdated("ZC2_MARCA")) 
+
+                If nOperation == MODEL_OPERATION_INSERT
+                    cAcao := 'Inclusão'
+
+                ElseIf nOperation == MODEL_OPERATION_UPDATE
+                    cAcao := 'Alteração'
+
+                ElseIF nOperation == MODEL_OPERATION_DELETE
+                    cAcao := 'Exclusão'
+
+                EndIf                 
+            EndIf   
+        EndIf 
+        DbSelectArea("ZZ1")
+        RecLock("ZZ1", .T.)
+            ZZ1->ZZ1_FILIAL := xFilial("ZZ1")
+            ZZ1->ZZ1_COD    := GETSXENUM("ZZ1","ZZ1_COD")
+            ZZ1->ZZ1_ACAO   := cAcao
+            ZZ1->ZZ1_DATA   := dData
+            ZZ1->ZZ1_HORA   := cHora
+            ZZ1->ZZ1_USER   := cCodUsr
+            ZZ1->ZZ1_IP     := cServer
+            ZZ1->ZZ1_RECNO  := nRecno
+        MsUnLock() // Comfirma e finaliza a operação  
+    Next nGridZC2                  
+RestArea(aArea)
 Return lRet
