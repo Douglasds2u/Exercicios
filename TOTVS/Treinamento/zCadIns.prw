@@ -179,6 +179,7 @@ User Function FGrvAcao(oModel)
 
     DbSelectArea("ZC1")
     ZC1->(DbSetOrder(1)) //ZC1_FILIAL + ZC1_COD
+    ZC1->(DbGoTop())
 
     If oMdlField:IsModified() // Valida se o modelo foi modificado
 
@@ -213,12 +214,15 @@ User Function FGrvAcao(oModel)
             ZZ1->ZZ1_USER   := cCodUsr
             ZZ1->ZZ1_IP     := cServer
             ZZ1->ZZ1_RECNO  := nRecno
-        MsUnLock() // Comfirma e finaliza a operação
+        ZZ1->(MsUnLock()) // Comfirma e finaliza a operação
     EndIf 
-    Set Deleted On         
+    Set Deleted On  
+
+    ZC1->(DbCloseArea())       
 
     DbSelectArea("ZC2")
     ZC2->(DbSetOrder(1)) //ZC2_FILIAL + ZC2_COD + ZC2_MARCA
+    ZC2->(DbGoTop())
 
     If oModelGrid:IsModified()
   
@@ -256,7 +260,7 @@ User Function FGrvAcao(oModel)
                     ZZ1->ZZ1_USER   := cCodUsr
                     ZZ1->ZZ1_IP     := cServer
                     ZZ1->ZZ1_RECNO  := nRecno
-                MsUnLock() // Comfirma e finaliza a operação
+                ZZ1->(MsUnLock()) // Comfirma e finaliza a operação
 
             EndIf
             Set Deleted On
@@ -287,20 +291,21 @@ User Function FGrvAcao(oModel)
                     ZZ1->ZZ1_USER   := cCodUsr
                     ZZ1->ZZ1_IP     := cServer
                     ZZ1->ZZ1_RECNO  := nRecno
-                MsUnLock() // Comfirma e finaliza a operação
+                ZZ1->(MsUnLock()) // Comfirma e finaliza a operação
 
             EndIf
             Set Deleted On
         EndIf
     Next
+    ZC2->(DbCloseArea())
 
     /*--------------------------------------------------------------------
     Validando e gravando as operações da Grid ZC3 - Tabela de Instrumentos
     ---------------------------------------------------------------------*/
 
     DbSelectArea("ZC3")
-    ZC3->(DbSetOrder(1))//ZC3_FILIAL + ZC3_COD + ZC3_ITEM
-
+    ZC3->(DbSetOrder(1))//ZC3_FILIAL + ZC3_CODINS + ZC3_ITEM
+    ZC3->(DbGoTop())
 
     If oMdlGridN:IsModified()
   
@@ -324,7 +329,7 @@ User Function FGrvAcao(oModel)
             Set Deleted Off
 
             //Se a variável não estiver vazia e encontrar o valor do campo Posicionado na tabela ZC3 
-            If !(Empty(cAcao)) .and. ZC3->(DbSeek(FWxFilial('ZC3') + oMdlGridN:GetValue("ZC3_COD") + oMdlGridN:GetValue("ZC3_ITEM") ))
+            If !(Empty(cAcao)) .and. ZC3->(DbSeek(FWxFilial('ZC3') + oMdlGridN:GetValue("ZC3_CODINS") + oMdlGridN:GetValue("ZC3_ITEM") ))
 
                 nRecno := ZC3->(RecNo())
 
@@ -338,7 +343,7 @@ User Function FGrvAcao(oModel)
                     ZZ1->ZZ1_USER   := cCodUsr
                     ZZ1->ZZ1_IP     := cServer
                     ZZ1->ZZ1_RECNO  := nRecno
-                MsUnLock() // Comfirma e finaliza a operação
+                ZZ1->(MsUnLock()) // Comfirma e finaliza a operação
 
             EndIf
             Set Deleted On
@@ -356,7 +361,7 @@ User Function FGrvAcao(oModel)
 
             Set Deleted Off
 
-            If ZC3->(DbSeek(FWxFilial('ZC3') + oMdlGridN:GetValue("ZC3_COD") + oMdlGridN:GetValue("ZC3_ITEM") ))
+            If ZC3->(DbSeek(FWxFilial('ZC3') + oMdlGridN:GetValue("ZC3_CODINS") + oMdlGridN:GetValue("ZC3_ITEM") ))
 
                 nRecno := ZC3->(RecNo())
                 DbSelectArea("ZZ1")
@@ -369,13 +374,13 @@ User Function FGrvAcao(oModel)
                     ZZ1->ZZ1_USER   := cCodUsr
                     ZZ1->ZZ1_IP     := cServer
                     ZZ1->ZZ1_RECNO  := nRecno
-                MsUnLock() // Comfirma e finaliza a operação
+                ZZ1->(MsUnLock()) // Comfirma e finaliza a operação
 
             EndIf
             Set Deleted On
         EndIf
     Next
-
+    ZC3->(DbCloseArea())
     FWRestRows(aSaveLines)
     FWRestArea(aAreaZC1)
     FWRestArea(aAreaZC2)
