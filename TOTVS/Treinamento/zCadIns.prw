@@ -32,7 +32,12 @@ User Function zCadIns()
     RestArea(aArea)
 Return
 
-/*Esta é a camada de controle (Adicionando os botões no browse)*/
+/* -------------------------------
+Nome: zCadIns
+Função para criar o menu do Browse
+Autor: Douglas Sousa
+Data: 05/09/2024
+---------------------------------*/
 Static Function MenuDef()
     Local aRotina := {}
 
@@ -44,7 +49,12 @@ Static Function MenuDef()
     ADD OPTION aRotina TITLE "Copiar"       ACTION "VIEWDEF.zCadIns" OPERATION 9 ACCESS 0
 Return aRotina
 
-/*Camada do modelo de dados*/
+/* --------------------------------
+Nome: zCadIns
+Função para criar o modelo de dados
+Autor: Douglas Sousa
+Data: 05/09/2024
+----------------------------------*/
 Static Function ModelDef()
     Local oModel     := Nil
     Local oStruPai   := FWFormStruct(1, cTabPai)
@@ -80,10 +90,18 @@ Static Function ModelDef()
 
     //Adicionando totalizadores de campos
     oModel:AddCalc('TOTAIS', 'ZC1MASTER', 'ZC2DETAIL', 'ZC2_COD',  'XX_TOTMRC', 'COUNT', , , "Total de Marcas:")
-    oModel:AddCalc('TOTAIS', 'ZC2DETAIL', 'ZC3DETAIL', 'ZC3_DESC', 'XX_TOTINS', 'COUNT', , , "Total de Instrumentos:")   
+    oModel:AddCalc('TOTAIS', 'ZC2DETAIL', 'ZC3DETAIL', 'ZC3_DESC', 'XX_TOTINS', 'COUNT', , , "Total de Instrumentos:")  
+
+    //Deixando o cabeçalho como não editável
+    oModel:GetModel("ZC1MASTER"):SetOnlyView(.T.) 
 Return oModel
 
-/*Camada visual (interface)*/
+/* -----------------------------------------
+Nome: zCadIns
+Função para criar a visualização dos modelos
+Autor: Douglas Sousa
+Data: 05/09/2024
+-------------------------------------------*/
 Static Function ViewDef()
     Local oModel     := FWLoadModel("zCadIns")
     Local oStruPai   := FWFormStruct(2, cTabPai)
@@ -127,10 +145,42 @@ Static Function ViewDef()
     oView:AddIncrementField("VIEW_ZC3", "ZC3_ITEM")
 
     //Adiciona botões direto no outras ações na ViewDef
-    oView:addUserButton("Imprimir", "MAGIC_BMP", {|| Alert("Em construção")               }, , , , .F.)
+    oView:addUserButton("Ir para linha", "MAGIC_BMP", {|| u_PosLin()}, , , , .F.)
 Return oView
 
-/*Função de auditoria para gravar operação realizada na tabela ZC1*/
+/* ------------------------------------
+Nome: zCadIns
+Função para posicionar na linha da Grid
+Autor: Douglas Sousa
+Data: 19/09/2024
+--------------------------------------*/
+User Function PosLin()
+    Local aArea    := FWGetArea()
+    Local aPergs   := {}
+    Local nLinha   := 1
+    Local nTamanho := 0
+    //Pegando os modelos de dados
+    Local oModelPad  := FWModelActive()
+    Local oModelGrid := oModelPad:GetModel('ZC3DETAIL')
+
+    //Adicionando os parâmetros que serão digitados
+    nTamanho := oModelGrid:Length()
+    aAdd(aPergs, {1, "Em qual linha deseja posicionar ? ", nLinha, "@E 999", "Positivo() .And. (&(Readvar()) <= " + cValToChar(nTamanho) + ")", "", ".T.", 80, .T.})
+
+    If ParamBox(aPergs, "Informe os parâmetros", , , , , , , , , .F., .F.)
+        //Posicionando na linha digitada
+        nLinha := MV_PAR01
+        oModelGrid:GoLine(nLinha)
+    EndIf
+
+    FWRestArea(aArea)
+Return
+/* -------------------------------------------------------------
+Nome: zCadIns
+Função de auditoria para gravar operação realizada na tabela ZC1
+Autor: Douglas Sousa
+Data: 19/09/2024
+--------------------------------------------------------------*/
 User Function FGrvAcao(oModel)   
     Local aArea := GetArea()
     Local lRet  := .T.
@@ -145,6 +195,7 @@ User Function FGrvAcao(oModel)
     Local cNomeUsr   := UsrRetName(cCodUsr)
     Local cServer    := GetClientIp() // Pega o IP da máquina local
     Local cAcao      := ""
+    Local cAlias     := ""
     Local nLinha     := 0
     Local oMdlField  := Nil
     Local oModelGrid := Nil
@@ -183,8 +234,9 @@ User Function FGrvAcao(oModel)
         Set Deleted Off
         //Posiciona na tabela ZC1
         If !(Empty(cAcao)) .and. ZC1->(DbSeek(FWxFilial('ZC1') + oMdlField:GetValue("ZC1_COD")))
+            cAlias := "ZC1"
             // Grava as operações executadas na Tabela customizada de auditoria ZZ1
-			Aadd(aRegsZZ1, {cAcao, ZC1->(RecNo())})
+			Aadd(aRegsZZ1, {cAlias, cAcao, ZC1->(RecNo())})
         EndIf
         Set Deleted On
 
@@ -195,7 +247,8 @@ User Function FGrvAcao(oModel)
         ZC2->(DbSetOrder(1)) //ZC2_FILIAL + ZC2_COD + ZC2_MARCA
     
         For nLinha := 1 To oModelGrid:Length()//Percorrendo a grid com os itens
-            cAcao := ""
+            cAcao  := ""
+            cAlias := ""
 
             oModelGrid:GoLine(nLinha)//Posicionando na linha atual
 
@@ -213,7 +266,8 @@ User Function FGrvAcao(oModel)
             Set Deleted Off
             //Se a variável não estiver vazia e o campo estiver Posicionado na tabela ZC2
             If !(Empty(cAcao)) .and. ZC2->(DbSeek(FWxFilial('ZC2') + oModelGrid:GetValue("ZC2_COD") + oModelGrid:GetValue("ZC2_MARCA")))
-                Aadd(aRegsZZ1, {cAcao, ZC2->(RecNo())})
+                cAlias := "ZC2"
+                Aadd(aRegsZZ1, {cAlias, cAcao, ZC2->(RecNo())})
             EndIf
             Set Deleted On
         Next nLinha
@@ -225,7 +279,8 @@ User Function FGrvAcao(oModel)
         ZC3->(DbSetOrder(1))//ZC3_FILIAL + ZC3_CODINS + ZC3_ITEM
     
         For nLinha := 1 To oMdlGridN:Length()//Percorrendo a grid com os itens
-            cAcao := ""
+            cAcao  := ""
+            cAlias := ""
 
             oMdlGridN:GoLine(nLinha)//Posicionando na linha atual
 
@@ -238,12 +293,13 @@ User Function FGrvAcao(oModel)
                     cAcao := 'Alteração'
                 ElseIf oMdlGridN:IsDeleted()
                     cAcao := 'Exclusão'
-                EndIf          
+                EndIf
             EndIf
             Set Deleted Off
             //Se a variável não estiver vazia e encontrar o valor do campo Posicionado na tabela ZC3 
             If !(Empty(cAcao)) .and. ZC3->(DbSeek(FWxFilial('ZC3') + oMdlGridN:GetValue("ZC3_CODINS") + oMdlGridN:GetValue("ZC3_ITEM")))
-                Aadd(aRegsZZ1, {cAcao, ZC3->(RecNo())})
+                cAlias := "ZC3"
+                Aadd(aRegsZZ1, {cAlias, cAcao, ZC3->(RecNo())})
             EndIf
             Set Deleted On
         Next nLinha
@@ -253,13 +309,14 @@ User Function FGrvAcao(oModel)
             RecLock("ZZ1", .T.)
                 ZZ1->ZZ1_FILIAL := xFilial("ZZ1")
                 ZZ1->ZZ1_COD    := GETSXENUM("ZZ1","ZZ1_COD")
-                ZZ1->ZZ1_ACAO   := aRegsZZ1[nLinha, 1]//cAcao
+                ZZ1->ZZ1_ALIAS  := aRegsZZ1[nLinha, 1]//cAlias
+                ZZ1->ZZ1_ACAO   := aRegsZZ1[nLinha, 2]//cAcao
                 ZZ1->ZZ1_DATA   := dData
                 ZZ1->ZZ1_HORA   := cHora
                 ZZ1->ZZ1_CODUSU := cCodUsr
                 ZZ1->ZZ1_NOMUSU := cNomeUsr
                 ZZ1->ZZ1_IP     := cServer
-                ZZ1->ZZ1_RECNO  := aRegsZZ1[nLinha, 2]//nRecno
+                ZZ1->ZZ1_RECNO  := aRegsZZ1[nLinha, 3]//nRecno
             ZZ1->(MsUnLock()) // Comfirma e finaliza a operação
         Next nLinha       
     EndIf
@@ -271,4 +328,3 @@ User Function FGrvAcao(oModel)
     RestArea(aArea)
 
 Return lRet
-    
